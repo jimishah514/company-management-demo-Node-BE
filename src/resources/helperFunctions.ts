@@ -1,5 +1,8 @@
 import * as axios from 'axios';
-import { Block } from '../interfaces/block';
+const { employees, offices, tags } = require('../../models');
+import { Office }  from '../interfaces/office';
+import { Employee } from '../interfaces/employee';
+import { Tag } from '../interfaces/tag';
 
 export class helper {
     
@@ -8,40 +11,138 @@ export class helper {
         return dt;
     }
 
-    static async getBlocksList() {
+    static async getEmployees() {
         try {
-            const time = await helper.getTime()
-            const infoList  = await axios.default.get(`https://blockchain.info/blocks/${time}?format=json`)
-            return infoList.data
+          const response = await employees.findAll({
+              include: [
+              {
+                attributes: ['name','address'],
+                model: offices
+              }
+            ],
+              raw: true,
+              nest: true
+          })
+          if(!response) return {
+                message : "no Record Found!"
+            }
+            return response
+
         }
         catch (e) {
-            console.log("Error Occured While retriving data from blockchain.info: ", e);
+            console.log("Error Occured While retriving data from database: ", e);
         }
     }
 
-    static async getBlockInfo(hash: any) {
-        
+     static async getEmployee(empId:any) {
         try {
-            const blockInfo  = await axios.default.get(`https://blockchain.info/rawblock/${hash}`)
-            const currentTime = new Date().getTime();
-            const age = currentTime - parseInt(blockInfo.data?.time)
-            const ageInMinutes =  Math.floor(age / 60000);
-
-            const blockInfoObj : Block = {
-                hash: hash,
-                height : blockInfo.data?.height,
-                weight : blockInfo.data?.weight,
-                size : blockInfo.data?.size,
-                age : ageInMinutes,
-                transactions: blockInfo.data?.tx?.length,
-                prev_block : blockInfo.data?.prev_block,
-                block_index : blockInfo.data?.block_index
+           const response = await employees.findOne({
+               where: {
+                   id: empId
+               },
+               raw: true
+           })
+           if(!response) return {
+                message : "no Record Found!"
             }
-            console.log("blockInfoObj : ",blockInfoObj)
-            return blockInfoObj
+            return response
         }
         catch (e) {
-            console.log("Error Occured While retriving data from blockchain.info: ", e);
+            console.log("Error Occured While retriving data from database: ", e);
+        }
+    }
+
+    static async getOffices() {
+        
+        try {
+            const response = await offices.findAll({
+                raw:true
+            })
+            if(!response) return {
+                message : "no Record Found!"
+            }
+            return response
+        }
+        catch (e) {
+            console.log("Error Occured While retriving data from database: ", e);
+        }
+    }
+
+    static async getOffice(officeId:any) {
+        try {
+            const response = await offices.findOne({
+                where: {
+                    id: officeId
+                },
+                raw: true
+            })
+            if(!response) return {
+                message : "no Record Found!"
+            }
+            return response
+        }
+        catch (e) {
+            console.log("Error Occured While retriving data from database: ", e);
+        }
+    }
+
+
+    static async getEmployeeTags(empId:any) {
+        try {
+            const response = await tags.findAll({
+                where: {
+                    employeeId: empId
+                },
+                raw: true
+            })
+            if(!response) return {
+                message : "no Record Found!"
+            }
+            return response
+        }
+        catch (e) {
+            console.log("Error Occured While retriving data from database: ", e);
+        }
+    }
+
+    static async addEmployee(employee: Employee) {
+        try {
+            return await employees.create(employee)
+        }
+        catch (e) {
+            console.log("Error Occured While adding employee to database: ", e);
+        }
+    }
+
+    static async addOffice(office: Office) {
+        try {
+            return await offices.create(office)
+        }
+        catch (e) {
+            console.log("Error Occured While adding office to database: ", e);
+        }
+    }
+
+    static async addTag(tag: Tag) {
+        try {
+            return await tags.create(tag)
+        }
+        catch (e) {
+            console.log("Error Occured While adding tag to  database: ", e);
+        }
+    }
+
+    static async updateTag(tagUpdateBody: any) {
+        try {
+            return await tags.update(
+                {tag : tagUpdateBody.tag},
+                {where: {
+                    id: tagUpdateBody.id
+                }}
+            )
+        }
+        catch (e) {
+            console.log("Error Occured While adding tag to  database: ", e);
         }
     }
     

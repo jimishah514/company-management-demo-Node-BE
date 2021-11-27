@@ -8,14 +8,38 @@ router.get("/",
    requireAuthUser(),
    commonController.getHelloWorld);
 
-router.get("/blocks",
+router.get("/employees",
    requireAuthUser(),
-   commonController.getBlocksList);
+   commonController.getEmployees);
 
-router.get("/blockInfo",
+router.get("/employees/:id",
    requireAuthUser(),
-   commonController.getBlockInfo);
+   commonController.getEmployee);
 
-router.get("/blocksInfoList",
+router.get("/offices",
    requireAuthUser(),
-   commonController.getBlockChainInfoList);
+   commonController.getOffices);
+
+router.get("/offices/:id",
+   requireAuthUser(),
+   commonController.getOffice);
+
+router.get("/employeetags",
+   requireAuthUser(),
+   commonController.getEmployeeTags);
+
+router.post("/employee",
+   requireAuthUser(),
+   commonController.addEmployee);
+
+router.post("/office",
+   requireAuthUser(),
+   commonController.addOffice);
+
+router.post("/tag",
+   requireAuthUser(),
+   commonController.addTag);
+
+router.patch("/tag",
+   requireAuthUser(),
+   commonController.updateTag);

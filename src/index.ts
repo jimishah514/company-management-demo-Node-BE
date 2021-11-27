@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 })); 
 app.use(cors({
 origin:'*',
-methods: 'GET,POST,OPTIONS,DELETE,PUT',
+methods: 'GET,POST,OPTIONS,DELETE,PUT,PATCH',
 credentials: true
 }))
 app.use('/',router);
