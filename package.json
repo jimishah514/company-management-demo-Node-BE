@@ -1,7 +1,7 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "description": "demo-app",
+  "description": "company-managementdemo-api",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
